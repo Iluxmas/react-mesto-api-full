@@ -1,0 +1,12 @@
+.header__navbar-email {
+  font-weight: 500;
+  font-size: 18px;
+  line-height: 22px;
+  margin: 0;
+  margin-bottom: 18px;
+}
+@media (min-width: 545px) {
+  .header__navbar-email {
+    margin: 0;
+  }
+}

@@ -1,0 +1,16 @@
+.card__remove-button {
+  padding: 0;
+  position: absolute;
+  background: center/100% url(../../../img/trash.png) no-repeat;
+  border: none;
+  height: 19px;
+  width: 18px;
+  right: 20px;
+  top: 20px;
+}
+
+.card__remove-button:hover {
+  cursor: pointer;
+  opacity: 0.5;
+  transition: opacity 0.15s;
+}

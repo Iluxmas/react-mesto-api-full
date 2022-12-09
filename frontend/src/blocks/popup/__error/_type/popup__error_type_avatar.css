@@ -1,0 +1,9 @@
+.popup__error_type_avatar {
+  margin-bottom: 15px;
+}
+
+@media (min-width: 545px) {
+  .popup__error_type_avatar {
+    margin-bottom: 15px;
+  }
+}

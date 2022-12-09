@@ -1,0 +1,5 @@
+.card__like-board {
+  display: flex;
+  flex-direction: column;
+  font-size: 0;
+}

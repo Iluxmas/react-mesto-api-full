@@ -1,0 +1,27 @@
+.header__logo {
+  width: 104px;
+  height: 24.4px;
+  margin-left: 30px;
+  bottom: 32px;
+  order: 2;
+  position: absolute;
+  /* left: 30px; */
+}
+
+@media (min-width: 545px) {
+  .header__logo {
+    order: unset;
+    position: static;
+    width: 142px;
+    height: 33px;
+    margin-left: 27px;
+  }
+}
+@media (min-width: 768px) {
+  .header__logo {
+    margin-left: 0;
+  }
+}
+
+.header__logo_activated {
+}

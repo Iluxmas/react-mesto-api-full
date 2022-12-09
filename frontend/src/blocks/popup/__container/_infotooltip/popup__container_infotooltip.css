@@ -1,0 +1,12 @@
+.popup__container_infotooltip {
+  padding: 50px 18px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+@media (min-width: 768px) {
+  .popup__container_infotooltip {
+    padding: 60px 18px;
+  }
+}

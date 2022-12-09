@@ -1,0 +1,7 @@
+.popup__zoom-image {
+    object-fit: cover;
+    object-position: center;
+    max-width: 75vw;
+    max-height: 75vh;
+    height: auto;
+}

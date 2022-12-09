@@ -1,0 +1,25 @@
+.profile__avatar-container {
+  position: relative;
+  margin-bottom: 25px;
+}
+
+@media (min-width: 545px) {
+  .profile__avatar-container {
+    margin-right: 20px;
+  }
+}
+
+@media (min-width: 768px) {
+  .profile__avatar-container {
+    margin-bottom: 0;
+
+    margin-right: 30px;
+  }
+}
+.profile__avatar-container:hover .profile__avatar-overlay {
+  background: rgba(0, 0, 0, 0.8);
+}
+
+.profile__avatar-container:hover .profile__avatar-edit {
+  opacity: 1;
+}

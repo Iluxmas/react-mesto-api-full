@@ -1,0 +1,9 @@
+.register__enter-link {
+  color: #ccc;
+}
+.register__enter-link:hover {
+  cursor: pointer;
+}
+.register__enter-link:visited {
+  color: #ccc;
+}

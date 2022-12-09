@@ -1,0 +1,26 @@
+.header__link {
+  text-decoration: none;
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 17px;
+  color: #fff;
+  margin-right: 30px;
+  justify-items: flex-end;
+  margin-left: auto;
+}
+@media (min-width: 545px) {
+  .header__link {
+    font-size: 18px;
+    line-height: 22px;
+    margin-right: 27px;
+  }
+}
+@media (min-width: 768px) {
+  .header__link {
+    margin-right: 0;
+  }
+}
+.header__link:hover {
+  opacity: 0.6;
+  cursor: pointer;
+}

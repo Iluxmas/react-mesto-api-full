@@ -1,0 +1,11 @@
+.profile__avatar-edit {
+  width: 42px;
+  height: 42px;
+  border: none;
+  background: center/60% url(../../../img/pencil_icon.png) no-repeat;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+.profile__avatar-edit:hover {
+  cursor: pointer;
+}

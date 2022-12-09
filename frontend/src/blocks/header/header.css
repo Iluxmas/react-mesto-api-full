@@ -1,0 +1,32 @@
+.header {
+  /* padding-top: 28px; */
+  /* padding-bottom: 28px; */
+  border-bottom: 1px solid rgba(84, 84, 84, 0.7);
+  margin-left: -19px;
+  margin-right: -19px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  position: relative;
+  flex-wrap: wrap;
+  height: 84px;
+  /* transition: height 1s; */
+}
+
+@media (min-width: 545px) {
+  .header {
+    box-sizing: border-box;
+    align-items: center;
+    height: 119px;
+    /* padding-top: 45px;
+    padding-bottom: 41px; */
+    margin-left: 0;
+    margin-right: 0;
+  }
+}
+
+.header_activated {
+  height: 225px;
+  align-items: flex-start;
+}

@@ -1,0 +1,10 @@
+.popup__status-icon {
+  width: 120px;
+  height: 120px;
+  margin-bottom: 40px;
+}
+@media (min-width: 768px) {
+  .popup__status-icon {
+    margin-bottom: 32px;
+  }
+}

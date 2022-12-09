@@ -1,0 +1,15 @@
+.header__navbar-logout {
+  cursor: pointer;
+  font-weight: 400;
+  font-size: 18px;
+  line-height: 22px;
+  color: #a9a9a9;
+}
+.header__navbar-logout:hover {
+  opacity: 0.85;
+}
+@media (min-width: 545px) {
+  .header__navbar-logout {
+    margin-left: 24px;
+  }
+}
