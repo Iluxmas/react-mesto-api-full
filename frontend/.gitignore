@@ -2,9 +2,6 @@
 
 # dependencies
 /node_modules
-/public
-/src
-/dist
 
 # testing
 /coverage
