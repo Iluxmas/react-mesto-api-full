@@ -8,8 +8,9 @@ const errorMessages = {
     "Возникла проблема с обновлением картинки профиля, обновите страницу и повторите запрос",
   profileUpdate: "Не получилось обновить данные профиля...",
   toggleLike: "Возникла проблема с проставкой лайка",
-  login: 'Возникла проблема при логине',
-  register: 'Возникла проблема при регистрации'
+  register: "Ошибка регистрации",
+  authorize: "Ошибка авторизации",
+  validate: "Токен не передан или передан не в том формате",
 };
 
 class ApiService {
@@ -27,61 +28,61 @@ class ApiService {
     });
   }
 
-  _getResource(url) {
+  _getResource(url, token) {
     return fetch(`${this._URLBase}${url}`, {
       method: 'GET',
-      credentials: 'include',
       headers: {
         "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
       },
     });
   }
 
-  _patchResource(url, data) {
+  _patchResource(url, data, token) {
     return fetch(`${this._URLBase}${url}`, {
       method: "PATCH",
-      credentials: 'include',
       headers: {
         "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
       },
       body: JSON.stringify(data),
     });
   }
 
-  getInitialCards() {
+  getInitialCards(token) {
     return this._checkResponse(
-      this._getResource("/cards"),
+      this._getResource("/cards", token),
       this._errorMessages.inititalCards
     );
   }
 
-  getProfileInfo() {
+  getProfileInfo(token) {
     return this._checkResponse(
-      this._getResource("/users/me"),
+      this._getResource("/users/me", token),
       this._errorMessages.profileLoad
     );
   }
 
-  patchProfileData(data) {
+  patchProfileData(data, token) {
     return this._checkResponse(
-      this._patchResource("/users/me", data),
+      this._patchResource("/users/me", data, token),
       this._errorMessages.profileUpdate
     );
   }
 
-  patchProfileAvatar(data) {
+  patchProfileAvatar(data, token) {
     return this._checkResponse(
-      this._patchResource("/users/me/avatar", data),
+      this._patchResource("/users/me/avatar", data, token),
       this._errorMessages.avatarUpdate
     );
   }
 
-  postNewCard({ title: name, link }) {
+  postNewCard({ title: name, link }, token) {
     const newProm = fetch(`${this._URLBase}/cards`, {
       method: "POST",
-      credentials: 'include',
       headers: {
         "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
       },
       body: JSON.stringify({ name, link }),
     });
@@ -89,51 +90,70 @@ class ApiService {
     return this._checkResponse(newProm, this._errorMessages.postCard);
   }
 
-  deleteCard(cardId) {
+  deleteCard(cardId, token) {
     const newProm = fetch(`${this._URLBase}/cards/${cardId}`, {
       method: "DELETE",
-      credentials: 'include',
+      headers: {
+        Authorization: `Bearer ${token}`,
+      }
     });
 
     return this._checkResponse(newProm, this._errorMessages.deleteCard);
   }
 
-  toggleLike(cardId, isLiked) {
+  toggleLike(cardId, isLiked, token) {
     const newProm = fetch(`${this._URLBase}/cards/${cardId}/likes`, {
       method: isLiked ? "DELETE" : "PUT",
-      credentials: 'include',
+      headers: {
+        Authorization: `Bearer ${token}`,
+      }
     });
 
     return this._checkResponse(newProm, this._errorMessages.toggleLike);
   }
 
-  register(password, email) {
-    const newProm = fetch(`${this._URLBase}/signup`, {
-      method: 'POST',
-      credentials: 'include',
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({ password, email })
-    });
-    return this._checkResponse(newProm, this._errorMessages.register);
-  };
 
-  login(password, email) {
+  register(email, password) {
+    const newProm = fetch(`${this._URLBase}/signup`, {
+      method: "POST",
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ password, email }),
+    });
+
+    return this._checkResponse(newProm, this._errorMessages.register);
+  }
+
+  authorize(email, password) {
     const newProm = fetch(`${this._URLBase}/signin`, {
-      method: 'POST',
+      method: "POST",
       credentials: 'include',
       headers: {
         'Accept': 'application/json',
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify({ password, email })
+      body: JSON.stringify({ password, email }),
     });
-    return this._checkResponse(newProm, this._errorMessages.login);
-  };
+
+    return this._checkResponse(newProm, this._errorMessages.authorize);
+  }
+
+  validate(token) {
+    const newProm = fetch(`${this._URLBase}/users/me`, {
+      method: "GET",
+      headers: {
+        'Accept': 'application/json',
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    return this._checkResponse(newProm, this._errorMessages.validate);
+  }
 }
 
-const apiService = new ApiService(`https://https://bereal.nomoredomains.club/`, errorMessages);
+const apiService = new ApiService(`https://api.bereal.nomoredomains.club`, errorMessages);
 
 export default apiService;

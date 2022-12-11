@@ -5,8 +5,8 @@ const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 const { celebrate, Joi, errors } = require('celebrate');
-
-const allowCors = require('./middlewares/cors');
+const cors = require('cors');
+// const allowCors = require('./middlewares/cors');
 const auth = require('./middlewares/auth');
 const cardRouter = require('./routes/cards');
 const userRouter = require('./routes/users');
@@ -16,17 +16,33 @@ const { login, createUser } = require('./controllers/users');
 const errorsHandler = require('./middlewares/errorsHandler');
 const { requestLogger, errorLogger } = require('./middlewares/logger');
 
+const { PORT = 3000 } = process.env;
 const app = express();
 
+const options = {
+  origin: [
+    'http://localhost:3000',
+    'http://localhost:3001',
+    'http://bereal.nomoredomains.club',
+    'https://bereal.nomoredomains.club',
+    'http://api.bereal.nomoredomains.club',
+    'https://api.bereal.nomoredomains.club',
+    'https://iluxmas.github.io',
+  ],
+  methods: ['GET', 'HEAD', 'PUT', 'PATCH', 'POST', 'DELETE'],
+  preflightContinue: false,
+  optionsSuccessStatus: 204,
+  allowedHeaders: ['Content-Type', 'origin', 'Authorization'],
+  credentials: true,
+};
+
+app.use('*', cors(options));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(requestLogger);
-app.use(allowCors);
 
 mongoose.connect('mongodb://localhost:27017/mestodb');
-
-const { PORT = 3000 } = process.env;
 
 app.get('/crash-test', () => {
   setTimeout(() => {

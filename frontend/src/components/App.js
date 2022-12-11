@@ -8,7 +8,6 @@ import Register from "./Register";
 import apiService from "../utils/api";
 import ImagePopup from "./ImagePopup";
 import InfoTooltip from "./InfoTooltip";
-import authService from "../utils/auth";
 import AddPlacePopup from "./AddPlacePopup";
 import ProtectedRoute from "./ProtectedRoute";
 import EditAvatarPopup from "./EditAvatarPopup";
@@ -28,6 +27,7 @@ export default function App() {
   const [isEditProfilePopupOpen, setIsEditProfilePopupOpen] = useState(false);
 
   const history = useHistory();
+  const token = localStorage.getItem('jwt');
 
   useEffect(() => {
     tokenCheck();
@@ -35,10 +35,11 @@ export default function App() {
 
   useEffect(() => {
     if (!isLogged) return;
-    Promise.all([apiService.getProfileInfo(), apiService.getInitialCards()])
+
+    Promise.all([apiService.getProfileInfo(token), apiService.getInitialCards(token)])
       .then(([userData, cardsData]) => {
         setCurrentUser(userData);
-        setCards(cardsData);
+        setCards(cardsData.reverse());
       })
       .catch((err) => console.log(err));
   }, [isLogged]);
@@ -48,9 +49,9 @@ export default function App() {
   function tokenCheck() {
     const jwt = localStorage.getItem("jwt");
     if (jwt) {
-      authService
+      apiService
         .validate(jwt)
-        .then(({ data }) => {
+        .then((data) => {
           if (data) {
             setEmail(data.email);
             setIsLogged(true);
@@ -63,7 +64,7 @@ export default function App() {
   }
 
   function handleLogin(email, password) {
-    authService
+    apiService
       .authorize(email, password)
       .then((data) => {
         if (data.token) {
@@ -77,7 +78,7 @@ export default function App() {
   }
 
   function handleRegister(email, password) {
-    authService
+    apiService
       .register(email, password)
       .then(() => {
         history.push("/sign-in");
@@ -96,6 +97,7 @@ export default function App() {
     localStorage.removeItem("jwt");
     localStorage.removeItem("email");
     setIsLogged(false);
+    setCurrentUser(null);
     setEmail("");
     setCards([]);
     history.push("/sign-in");
@@ -126,10 +128,10 @@ export default function App() {
   }
 
   function handleCardLike(card) {
-    const isLiked = card.likes.some((item) => item._id === currentUser._id);
+    const isLiked = card.likes.some(id => id === currentUser._id);
 
     apiService
-      .toggleLike(card._id, isLiked)
+      .toggleLike(card._id, isLiked, token)
       .then((newCard) =>
         setCards((cards) =>
           cards.map((c) => (c._id === card._id ? newCard : c))
@@ -140,7 +142,7 @@ export default function App() {
 
   function handleCardDelete(card) {
     apiService
-      .deleteCard(card._id)
+      .deleteCard(card._id, token)
       .then(() => {
         setCards((cards) => cards.filter((c) => c._id !== card._id));
       })
@@ -149,7 +151,7 @@ export default function App() {
 
   function handleUpdateUser(newData) {
     apiService
-      .patchProfileData(newData)
+      .patchProfileData(newData, token)
       .then((data) => {
         setCurrentUser(data);
         closeAllPopups();
@@ -159,7 +161,7 @@ export default function App() {
 
   function handleUpdateAvatar(newUrl) {
     apiService
-      .patchProfileAvatar(newUrl)
+      .patchProfileAvatar(newUrl, token)
       .then((data) => setCurrentUser(data))
       .catch((err) => console.log(err))
       .finally(() => {
@@ -169,7 +171,7 @@ export default function App() {
 
   function handleAddCard(cardNewData) {
     apiService
-      .postNewCard(cardNewData)
+      .postNewCard(cardNewData, token)
       .then((newCard) => {
         setCards([newCard, ...cards]);
       })

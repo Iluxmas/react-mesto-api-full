@@ -6,6 +6,8 @@ const Error404 = require('../errors/error404');
 const Error409 = require('../errors/error409');
 const { StatusCodes } = require('../utils/StatusCodes');
 
+const { NODE_ENV, JWT_SECRET } = process.env;
+
 function createUser(req, res, next) {
   const {
     password, email, name, about, avatar,
@@ -33,7 +35,7 @@ function getUser(req, res, next) {
   User.findById(req.params.userId)
     .then((user) => {
       if (!user) next(new Error404('Пользователь не найден'));
-      return res.send({ data: user });
+      return res.send(user);
     })
     .catch(next);
 }
@@ -58,7 +60,7 @@ function updateUser(req, res, next) {
   User.findByIdAndUpdate(_id, req.body, { runValidators: true, new: true })
     .then((user) => {
       if (!user) next(new Error404('Пользователя с указанным id не найдено'));
-      res.send({ data: user });
+      res.send(user);
     })
     .catch(next);
 }
@@ -68,15 +70,14 @@ function updateAvatar(req, res, next) {
   User.findByIdAndUpdate(_id, req.body, { new: true })
     .then((user) => {
       if (!user) next(new Error404('Пользователя с указанным id не найдено'));
-      res.send({ data: user });
+      res.send(user);
     })
     .catch(next);
 }
 
 function login(req, res, next) {
   const { email, password } = req.body;
-
-  return User.findOne({ email }).select('+password')
+  User.findOne({ email }, '+password')
     .then((user) => {
       if (!user) next(new Error401('Неправильные почта или пароль'));
 
@@ -84,9 +85,10 @@ function login(req, res, next) {
         if (error) next(new Error401('Неправильные почта или пароль'));
 
         if (data) {
-          const token = jwt.sign({ _id: user._id }, 'iddqd_idkfa', { expiresIn: '7d' });
-          res.cookie('jwt', token, { maxAge: 3600000 * 24 * 7, httpOnly: true });
-          return res.status(StatusCodes.OK).send({ message: 'Access granted' });
+          const token = jwt.sign({ _id: user._id }, NODE_ENV === 'production' ? JWT_SECRET : 'iddqd_idkfa', { expiresIn: '7d' });
+          console.log(token);
+
+          return res.cookie('jwt', token, { maxAge: 3600000 * 24 * 7, httpOnly: true, sameSite: true, }).status(StatusCodes.OK).send({ token });
         }
 
         return next(new Error401('Неправильные почта или пароль'));

@@ -20,16 +20,16 @@ userRouter.patch('/me', celebrate({
   }),
 }), updateUser);
 
-userRouter.get('/:userId', celebrate({
-  params: Joi.object().keys({
-    userId: Joi.string().alphanum().length(24),
-  }),
-}), getUser);
-
 userRouter.patch('/me/avatar', celebrate({
   body: Joi.object().keys({
     avatar: Joi.string().pattern(Patterns.url),
   }),
 }), updateAvatar);
+
+userRouter.get('/:userId', celebrate({
+  params: Joi.object().keys({
+    userId: Joi.string().alphanum().length(24),
+  }),
+}), getUser);
 
 module.exports = userRouter;

@@ -8,7 +8,7 @@ function createCard(req, res, next) {
   const owner = req.user._id;
 
   Card.create({ name, link, owner })
-    .then((card) => res.send({ data: card }))
+    .then((card) => res.send(card))
     .catch(next);
 }
 
@@ -26,7 +26,7 @@ function deleteCard(req, res, next) {
 
 function getAllCards(req, res, next) {
   Card.find({})
-    .then((cards) => res.send({ data: cards }))
+    .then((cards) => res.send(cards))
     .catch(next);
 }
 
@@ -39,7 +39,7 @@ function likeCard(req, res, next) {
   )
     .then((card) => {
       if (!card) next(new Error404('Передан несуществующий id карточки.'));
-      res.send({ data: card });
+      res.send(card);
     })
     .catch(next);
 }
@@ -54,7 +54,7 @@ function dislikeCard(req, res, next) {
     .then((card) => {
       if (!card) return next(new Error404('Передан несуществующий id карточки.'));
 
-      return res.status(200).send({ data: card });
+      return res.status(200).send(card);
     })
     .catch(next);
 }
