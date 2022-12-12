@@ -11,6 +11,12 @@ const cardSchema = new mongoose.Schema({
   link: {
     type: String,
     required: true,
+    validate: {
+      validator(url) {
+        return validator.isURL(url);
+      },
+      message: 'Некорректная ссылка на фотографию',
+    },
   },
   owner: {
     type: mongoose.Schema.Types.ObjectId,
@@ -21,12 +27,6 @@ const cardSchema = new mongoose.Schema({
     type: [mongoose.Schema.Types.ObjectId],
     ref: 'user',
     default: [],
-    validate: {
-      validator(url) {
-        return validator.isURL(url);
-      },
-      message: 'Некорректная ссылка на фотографию',
-    },
   },
   createdAt: {
     type: Date,
