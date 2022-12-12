@@ -24,11 +24,11 @@ router.post('/signup', celebrate({
   }),
 }), createUser);
 
-router.use('/', auth);
+router.use(auth);
 
 router.use('/users', userRouter);
 router.use('/cards', cardRouter);
 
-router.all('*', (req, res, next) => next(new Error404('Страницы по данному адресу не существует')));
+router.use('*', (req, res, next) => next(new Error404('Страницы по данному адресу не существует')));
 
 module.exports = router;
