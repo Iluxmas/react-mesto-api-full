@@ -1,5 +1,6 @@
 const Card = require('../models/card');
 const { StatusCodes } = require('../utils/StatusCodes');
+const Error400 = require('../errors/error400');
 const Error403 = require('../errors/error403');
 const Error404 = require('../errors/error404');
 
@@ -9,18 +10,20 @@ function createCard(req, res, next) {
 
   Card.create({ name, link, owner })
     .then((card) => res.send(card))
-    .catch(next);
+    .catch((error) => {
+      if (error.name === 'ValidationError') next(new Error400('Переданы некорректные данные'));
+      else next(error);
+    });
 }
 
 function deleteCard(req, res, next) {
   Card.findById(req.params.cardId)
     .then((card) => {
-      if (!card) next(new Error404('Передан несуществующий id карточки.'));
-      if (card.owner.toString() !== req.user._id) next(new Error403('Только владелец может удалять свои карточки'));
+      if (!card) return next(new Error404('Передан несуществующий id карточки.'));
+      if (card.owner.toString() !== req.user._id) return next(new Error403('Только владелец может удалять свои карточки'));
 
-      card.remove();
-      return res.status(StatusCodes.OK).send({ message: 'Карточка была удалена' });
-    })
+      return card.remove();
+    }).then(() => res.status(StatusCodes.OK).send({ message: 'Карточка была удалена' }))
     .catch(next);
 }
 
@@ -38,7 +41,7 @@ function likeCard(req, res, next) {
     { new: true },
   )
     .then((card) => {
-      if (!card) next(new Error404('Передан несуществующий id карточки.'));
+      if (!card) return next(new Error404('Передан несуществующий id карточки.'));
       res.send(card);
     })
     .catch(next);
