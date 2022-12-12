@@ -60,7 +60,7 @@ function updateUser(req, res, next) {
   User.findByIdAndUpdate(_id, req.body, { runValidators: true, new: true })
     .then((user) => {
       if (!user) return next(new Error404('Пользователя с указанным id не найдено'));
-      res.send(user);
+      return res.send(user);
     })
     .catch((error) => {
       if (error.name === 'ValidationError') next(new Error400('Переданы некорректные данные'));
@@ -73,7 +73,7 @@ function updateAvatar(req, res, next) {
   User.findByIdAndUpdate(_id, req.body, { new: true })
     .then((user) => {
       if (!user) return next(new Error404('Пользователя с указанным id не найдено'));
-      res.send(user);
+      return res.send(user);
     })
     .catch((error) => {
       if (error.name === 'ValidationError') next(new Error400('Переданы некорректные данные'));
@@ -87,7 +87,7 @@ function login(req, res, next) {
     .then((user) => {
       if (!user) return next(new Error401('Неправильные почта или пароль'));
 
-      bcrypt.compare(password, user.password, (error, data) => {
+      return bcrypt.compare(password, user.password, (error, data) => {
         if (error) return next(new Error401('Неправильные почта или пароль'));
 
         if (data) {

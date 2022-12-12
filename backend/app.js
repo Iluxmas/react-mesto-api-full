@@ -73,7 +73,6 @@ app.use('/cards', cardRouter);
 app.use('/users', userRouter);
 app.all('*', (req, res, next) => next(new Error404('Страницы по данному адресу не существует')));
 
-
 app.use(errorLogger);
 app.use(errors());
 app.use(errorsHandler);

@@ -42,7 +42,7 @@ function likeCard(req, res, next) {
   )
     .then((card) => {
       if (!card) return next(new Error404('Передан несуществующий id карточки.'));
-      res.send(card);
+      return res.send(card);
     })
     .catch(next);
 }
